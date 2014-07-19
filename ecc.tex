@@ -1,0 +1,431 @@
+\documentclass{beamer}
+\usepackage{mathtools}
+
+\newtheorem{algorithm}{Algorithm}
+\newtheorem{setup}{Setup}
+\newtheorem{encryption}{Encryption}
+\newtheorem{decryption}{Decryption}
+\newcommand{\zmod}[1]{\ensuremath{\mathbb{Z}/#1\mathbb{Z}}}
+
+\usetheme{PaloAlto}
+\usecolortheme{seagull}
+
+\title[Elliptic Curve Cryptography]{Elliptic Curves and
+    Their Applications in Cryptography}
+\author{Tim Shaffer\thanks{Advisor: Dr. Jacek Fabrykowski}}
+\institute[YSU]{Youngstown State University}
+\date{MathFest 2014}
+
+\begin{document}
+    \frenchspacing
+    \frame{\maketitle}
+
+    \begin{frame}
+        \frametitle{Fermat's Last Theorem}
+        Pierre de Fermat: % remember title of book (Arithmetica)
+        \begin{quote}
+            It is impossible to write a cube as the sum of two cubes, a fourth
+            power as the sum of two fourth powers, and, in general, any power
+            beyond the second as the sum of two similar powers. For this I
+            have discovered a truly wonderful proof but the margin is too
+            small to contain it.
+        \end{quote}
+        \vfill
+        1995--Andrew Wiles published the first successful proof.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Elliptic Curve Factorization}
+        Pollard's~\(p - 1\)~algorithm can find prime factors \(p\) of a
+        composite integer for which \(p - 1\) is smooth. % define smooth
+        \vfill
+        Elliptic curve factorization is a generalization of
+        Pollard's~\(p - 1\)~algorithm using random elliptic curve groups
+        over \zmod{p}.
+    \end{frame}
+
+    \section{Definitions}
+    \begin{frame}
+        \begin{definition}
+            An elliptic curve is a projective algebraic curve with
+            affine coordinates given by \[y^2 = x^3 + \alpha x + \beta\]
+            where \[4\alpha^3 + 27\beta^2 \neq 0.\]
+        \end{definition}
+        \vfill
+        Elliptic curves over finite fields (usually \zmod{p}) are of
+        particular interest in cryptography.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Elliptic Curves}
+        \centering
+        \includegraphics[height=.9\textheight]{EllipticCurveCatalog.pdf}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Elliptic Curve on \zmod{61}}
+        \centering
+        \includegraphics[height=.9\textheight]{EllipticCurveOnFiniteField.png}
+    \end{frame}
+
+    \subsection{Affine Space}
+    \begin{frame}
+        \frametitle{Affine Space}
+        \begin{definition}
+            Given a finite field with \(q\) elements, \(\mathbb{F}_q\),
+            affine \(n\)-space over \(\mathbb{F}_q\), denoted
+            \(A^n(\mathbb{F}_q)\), is the set of
+            \(n\)-tuples \((a_0, a_1, \dots, a_{n - 1})\) with
+            \(a_i \in \mathbb{F}_q.\)
+        \end{definition}
+        \vfill
+        \begin{definition}
+            A \textbf{point} in \(A^n(\mathbb{F}_q)\) is an \(n\)-tuple
+            \((a_0, a_1, \dots, a_{n - 1})\) for \(a_i \in \mathbb{F}_q\).
+        \end{definition}
+    \end{frame}
+
+    \subsection{Projective Space}
+    \begin{frame}
+        \frametitle{Projective Space}
+        \begin{definition}
+            Projective \(n\)-space over \(\mathbb{F}_q\), denoted
+            \(P^n(\mathbb{F}_q)\), is the set of equivalence classes of
+            nonzero elements of \(A^{n+1}(\mathbb{F}_q)\) under the
+            equivalence relation
+            \[(a_0, a_1, \dots, a_n) \sim (b_0, b_1, \dots, b_n)\] iff there
+            exists a \(0 \neq \lambda \in \mathbb{F}_q\) such that
+            \[a_i = \lambda b_i\] for all \(i = 0, 1, \dots, n\).
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Projective Space}
+        \begin{definition}
+            A \textbf{point} in \(P^n(\mathbb{F}_q)\), denoted
+            \([a_0, a_1, \dots, a_n]\), is the equivalence class
+            containing \((a_0, a_1, \dots, a_n)\).
+        \end{definition}
+        \vfill
+        While \(A^2(\mathbb{F}_q)\) has \(q^2\) points,
+        \(P^2(\mathbb{F}_q)\) has \(q^2 + q + 1\) points.
+        \vfill
+        The points in \(P^2(\mathbb{F}_q)\) can be broken into 2 subsets:
+        \begin{itemize}
+            \item \(q^2\) \textbf{finite points} of the form \([a_0, a_1, 1]\)
+                that map to \(A^2(\mathbb{F}_q)\)
+            \item \(q+1\) \textbf{points at infinity} of the
+                form \([a_0, a_1, 0]\)
+                with the structure of \(P^1(\mathbb{F}_q)\)
+        \end{itemize}
+    \end{frame}
+
+    \subsection{Algebraic Curves}
+    \begin{frame}
+        \frametitle{Algebraic Curves}
+        \begin{definition}
+            An affine algebraic curve over \(\mathbb{F}_q\) is defined by
+            \(f(x, y) = 0\) for an irreducible polynomial
+            \(f(x, y) \in \mathbb{F}_q[x, y]\).
+        \end{definition}
+        \vfill
+        \begin{definition}
+            A projective algebraic curve over \(\mathbb{F}_q\) is defined by
+            \(f(x, y, z) = 0\) for an irreducible homogeneous polynomial
+            \(f(x, y, z) \in \mathbb{F}_q[x, y, z]\).
+        \end{definition}
+    \end{frame}
+
+    \subsection{Singular Points}
+    \begin{frame}
+        \frametitle{Singular Points}
+        \begin{definition}
+            A point \(P\) on an affine curve \(f(x, y) = 0\) is called
+            \textbf{singular} if
+            \[\left(\frac{\partial f}{\partial x}(P),
+                    \frac{\partial f}{\partial y}(P)\right) = (0, 0)\]
+        \end{definition}
+        \vfill
+        \begin{definition}
+            An algebraic curve is called \textbf{nonsingular} or
+            \textbf{smooth} if it contains no singular points.
+        \end{definition}
+    \end{frame}
+
+    \subsection{Elliptic Curves}
+    \begin{frame}
+        \frametitle{Elliptic Curves}
+        The \textbf{projective Weierstrass equation} of an elliptic curve is
+        given by
+        \[y^2z + \alpha_1xyz + \alpha_3yz^2 =
+          x^3 + \alpha_2x^2z + \alpha_4xz^2 + \alpha_6z^3.\]
+        \vfill % homogenization
+        The affine \textbf{Weierstrass normal form} of an elliptic curve is
+        \[y^2 - x^3 - \alpha x - \beta = 0\] with
+        discriminant \(\Delta = -16(4\alpha^3 + 27\beta^2)\).
+    \end{frame}
+
+    \section{Group Properties}
+    \subsection{Additive Operation}
+    \begin{frame}
+        \frametitle{Additive Operation}
+        \centering
+        \includegraphics[height=.9\textheight]{grouplaw.jpg}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Additive Operation}
+        \centering
+        \includegraphics[width=\textwidth]{ECClines.pdf}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Additive Operation}
+        \begin{theorem}
+            For an elliptic curve \(\mathcal{E}(\mathbb{F}_q)\)
+            and \(a, b, c, d \in \mathbb{F}_q\),
+            let \(P = (a, b)\) and \(Q = (c, d)\) be two points
+            on \(\mathcal{E}\) such that \(Q \neq -P = (a, -b)\). Define
+            \[M = 
+                \begin{dcases}
+                    \frac{d - b}{c - a} & \textnormal{if}\ a \neq c \\
+                    \frac{3a^2 + \alpha}{2b} & \textnormal{if}\ a = c.
+                \end{dcases}\]
+            Then the point \(P + Q\) is given by \(R = (g, h)\) where
+            \begin{align*}
+                g &= M^2 - a - c \\
+                h &= Ma - Mg - b.
+            \end{align*}
+        \end{theorem}
+    \end{frame}
+
+    \subsection{ECDLP}
+    \begin{frame}
+        \frametitle{Elliptic Curve Discrete Logarithm Problem}
+        Given \(P = (a, b)\) on \(\mathcal{E}\), it is possible to
+        efficiently compute \(\overbrace{P + \dots + P}^{n\ \textrm{times}}\),
+        denoted \([n]P\).
+        \vfill
+        However, given \(P\) and \([n]P\), it can be \emph{very} difficult to
+        compute the value of \(n\).
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Efficient Computation of \([n]P\)}
+        \begin{algorithm}
+            \begin{enumerate}
+                \item Write \(n\) in its binary form, i.e.
+                    \(n = n_0 + 2n_1 + 2^2n_2 + \dots + 2^tn_t\),
+                    with \(n_i \in \{0, 1\}\) and \(n_t = 1\).
+                \item Let \(P_0 = P\).
+                \item For \(i = 1, \dots, t\), compute \(P_i = [2^i]P =
+                    [2]P_{i - 1}\) recursively.
+                \item Then, \([m]P =\sum _{i = 0} ^t [n_i]P_i\).
+            \end{enumerate}
+        \end{algorithm}
+        \vfill
+        While na\"{i}ve application of the group operator
+        requires \(n\) additions, this algorithm can be carried out
+        in \(2t \leq 2 \log n\) additions.
+    \end{frame} % brush up on \rho, baby-step giant-step
+
+    \subsection{Order of \(\mathcal{E}(\mathbb{F}_q)\)}
+    \begin{frame}
+        \frametitle{Order of \(\mathcal{E}(\mathbb{F}_q)\)}
+        A curve with a small number of points would be vulnerable to
+        cryptanalysis.
+        \vfill
+        If an elliptic curve on \(\mathbb{F}_p\) has exactly \(p\) points,
+        the ECDLP can be transformed into addition in \(\mathbb{Z}_p\).
+        \vfill
+        \begin{definition}[Hasse-Weil Bound]
+            Let \(N\) be the number of points in \(\mathbb{F}_q\)
+            on an elliptic curve \(\mathcal{E}\).
+            \[q + 1 - 2\sqrt{q} \leq N \leq q + 1 + 2\sqrt{q}.\]
+        \end{definition}
+    \end{frame}
+
+    \subsection{Schoof's Algorithm}
+    \begin{frame}
+        \frametitle{Schoof's Algorithm}
+        The number of points on an elliptic curve can be calculated
+        efficiently using a deterministic polynomial time algorithm.
+        \vfill
+        Schoof's Algorithm works by computing \(q + 1 - N \pmod p\) for
+        a large number of primes whose product is greater than \(4\sqrt{q}\),
+        then calculating \(q + 1 - N\) by the Chinese Remainder Theorem.
+        \vfill
+        With improvements by Atkin and Elkies, Schoof's Algorithm
+        runs in \(O(\log^4 q)\) time.
+    \end{frame}
+
+    \subsection{Pairings}
+    \begin{frame}
+        \frametitle{Pairings on Elliptic Curves}
+        \begin{definition}
+            Given abelian groups \(G_1, G_2, G_3\), a pairing
+            \(\omega: G_1 \times G_2 \to G_3\) maps every pair of elements
+            in \(G_1 \times G_2\) to some element in \(G_3\).
+        \end{definition}
+        \vfill
+        A \emph{cryptographically useful} pairing is also
+        \begin{itemize}
+            \item bilinear: if \(g_1, g_1' \in G_1\)
+                and \(g_2, g_2' \in G_2\)
+                then \(\omega(g_1g_1', g_2) =
+                \omega(g_1, g_2)\omega(g_1', g_2)\)
+                and \(\omega(g_1, g_2g_2') =
+                \omega(g_1, g_2)\omega(g_1, g_2')\).
+            \item nondegenerate: if \(\omega(g_1, g_2) = 1\)
+                for all \(g_2 \in G_2\) then it follows that \(g_1 = 1\).
+        \end{itemize}
+    \end{frame}
+
+    \section{Cryptography}
+    \begin{frame}
+        Assume that all parties agree in advance on a choice of elliptic curve
+        \(\mathcal{E}\) on finite field \(\mathbb{F}_p\),
+        \(P \in \mathcal{E}(\mathbb{F}_p)\), and paring \(\omega\)
+        on \(\mathcal{E}\).
+        \vfill
+        The chosen parameters are assumed to be public knowledge and to
+        possess the properties appropriate for security.
+        \vfill
+        Let \(M \in \mathcal{E}(\mathbb{F}_p)\) be a message (encoded as
+        a point on \(\mathcal{E}(\mathbb{F}_p)\))
+        that Alice would like to send to Bob.
+    \end{frame}
+
+    \subsection{ECDH}
+    \begin{frame}
+        \frametitle{Elliptic Curve Diffie-Hellman Exchange}
+        \begin{setup}
+            \begin{itemize}
+                \item Alice chooses a random secret \(a \in \mathbb{Z}\) and
+                    sends \(A = [a]P\) to Bob over an insecure channel.
+                \item In the same way, Bob chooses a random secret
+                \(b \in \mathbb{Z}\) and sends \(B = [b]P\) to Alice.
+            \end{itemize}
+        \end{setup}
+        \vfill
+        \begin{algorithm}
+            \begin{itemize}
+                \item Alice computes \(Q = [a]B = [ab]P\).
+                \item Bob computes \(Q = [b]A = [ba]P\).
+            \end{itemize}
+        \end{algorithm}
+    \end{frame}
+
+    \subsection{Elgamal}
+    \begin{frame}
+        \frametitle{Elgamal Encryption}
+        \begin{setup}
+            Bob chooses a private key \(b \in \mathbb{Z}\) and computes
+            his public key \(B = [b]P\). Bob is free to publish \(B\).
+        \end{setup}
+        \vfill
+        \begin{encryption}
+            Alice chooses a random \(k \in \mathbb{Z}\)
+            and computes \(C_1 = [k]P\),
+            \(C_2 = M + [k]B\) and sends \((C_1, C_2)\) to Bob.
+        \end{encryption}
+        \vfill
+        \begin{decryption}
+            Bob computes \(M = C_2 - [a]C_1\).
+        \end{decryption}
+    \end{frame}
+
+    \subsection{Tripartite Key Exchange}
+    \begin{frame}
+        \frametitle{Tripartite Key Exchange}
+        \begin{setup}
+            Alice, Bob, and Carl each choose a random secret
+            \(a, b, c \in \mathbb{Z}\), respectively. They compute and
+            share \(A = [a]P\), \(B = [b]P\), and \(C = [c]P\)
+            over insecure channels.
+        \end{setup}
+        \vfill
+        \begin{algorithm}
+            Each computes the shared secret as follows using his/her
+            respective secret:
+            \begin{itemize}
+                \item Alice: \(\omega(B, C)^a\)
+                \item Bob: \(\omega(A, C)^b\)
+                \item Carl: \(\omega(A, B)^c\)
+            \end{itemize}
+        \end{algorithm}
+    \end{frame}
+
+    \subsection{ID-based Encryption}
+    \begin{frame}
+        \frametitle{Identity-based Encryption}
+        Let Trent act as the trusted authority.
+        \vfill
+        \begin{setup}
+            \begin{enumerate}
+                \item Trent chooses a master secret \(s \in \mathbb{Z}\) and
+                    publishes \(S = [s]P\).
+                \item Bob encodes his identity (e.g. username, email, etc.)
+                    as \(b \in \mathbb{Z}\). Anyone can compute Bob's public
+                    key \(B = [b]P\).
+                \item Bob requests his private key
+                    \(E = [s]B = [sb]P\) from Trent.
+            \end{enumerate}
+        \end{setup}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Identity-based Encryption}
+        \begin{encryption}
+            Alice chooses a random secret \(t \in \mathbb{Z}\) and sends
+            \((U, V) = ([t]P, M + \omega(B, S)^t)\) to Bob.
+        \end{encryption}
+        \vfill
+        \begin{decryption}
+            Bob computes \(M = V - \omega(E, U)\).
+        \end{decryption}
+    \end{frame}
+
+    \section{References}
+    \begin{frame} %[allowframebreaks]
+        \frametitle{References}
+        \begin{itemize}
+            \item Baker, Alan. \emph{A Comprehensive Course in Number Theory}.
+                New York: Cambridge UP, 2012. Print.
+            \item Boutet, Emmanuel. Example Elliptic Curves. Digital image.
+                \emph{Wikimedia Commons}.
+                Wikimedia Foundation, 25 Oct. 2007.
+                Web. 16 July 2014. (CC BY-SA 3.0)
+            \item Ireland, Kenneth F., and Michael I. Rosen. \emph{A Classical
+                Introduction to Modern Number Theory}. Vol. 84. New York:
+                Springer-Verlag, 1990. Print. Graduate Texts in Mathematics.
+            \item Ling, San, Huaxiong Wang, and Chaoping Xing. \emph{Algebraic
+                Curves in Cryptography}. Boca Raton: CRC, 2013. Print.
+            \item Menezes, Alfred J., Paul C. Van Oorschot, and
+                Scott A. Vanstone. \emph{Handbook of Applied Cryptography}.
+                Boca Raton: CRC, 1997. Print.
+        \end{itemize}
+    \end{frame}
+    \begin{frame}
+    \centering
+        \begin{columns}[T]
+            \begin{column}[T]{.2\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{cc.pdf}
+            \end{column}
+            \begin{column}[T]{.2\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{by.pdf}
+            \end{column}
+            \begin{column}[T]{.2\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{sa.pdf}
+            \end{column}
+        \end{columns}
+        \vfill
+        This work is licensed under the
+        Creative~Commons Attribution-ShareAlike~4.0 International~License.
+        To view a copy of this license, visit
+        \url{http://creativecommons.org/licenses/by-sa/4.0/}.
+    \end{frame}
+\end{document}

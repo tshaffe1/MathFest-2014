@@ -1,0 +1,54 @@
+% Copyright 2014 Tim Shaffer<trshaffer@student.ysu.edu>
+
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+% This color theme was made for PaloAlto. If it works with other themes, great.
+\mode<presentation>
+
+\definecolor{YSUred}{RGB}{228,25,55} 
+% I don't know if there even is an official YSU red, but a 'Y' on the
+% homepage used this color.
+
+\setbeamercolor{structure}{fg=YSUred!50!black} % bullets, buttons, etc.
+
+% block environments (I don't know what 'alerted' or 'example' means)
+\setbeamercolor{block title}{fg=white,bg=YSUred!50!black}
+\setbeamercolor{block title alerted}{use=alerted text,fg=white,bg=alerted text.fg!75!black}
+\setbeamercolor{block title example}{use=example text,fg=white,bg=example text.fg!75!black}
+
+% inherits from above
+\setbeamercolor{block body}{parent=normal text,use=block title,bg=block title.bg!10!bg}
+\setbeamercolor{block body alerted}{parent=normal text,use=block title alerted,bg=block title alerted.bg!10!bg}
+\setbeamercolor{block body example}{parent=normal text,use=block title example,bg=block title example.bg!10!bg}
+
+\setbeamercolor*{palette primary}{fg=white,bg=YSUred!50!black} % bg is title box, fg is title & main header text
+\setbeamercolor*{palette secondary}{bg=YSUred!50!black} % northwest block
+%\setbeamercolor*{palette tertiary}{use=structure,fg=green,bg=structure.fg!50!black} % doesn't seem to do anything...
+%\setbeamercolor*{palette quaternary}{fg=white,bg=black} % same...
+
+\setbeamercolor*{sidebar}{bg=YSUred!25!black} % sidebar
+  
+\setbeamercolor*{palette sidebar primary}{fg=white} % active subsection on sidebar
+\setbeamercolor*{palette sidebar secondary}{fg=white} % active section on sidebar
+\setbeamercolor*{palette sidebar tertiary}{fg=YSUred!75!white} % name on sidebar
+\setbeamercolor*{palette sidebar quaternary}{fg=white} % short title on sidebar
+
+%\setbeamercolor*{titlelike}{parent=palette primary} % doesn't do anything?
+
+\setbeamercolor*{separation line}{} % ???
+\setbeamercolor*{fine separation line}{} % ???
+
+\setbeamercolor{frametitle}{bg=YSUred!75!black} % north bar
+
+\mode<all>

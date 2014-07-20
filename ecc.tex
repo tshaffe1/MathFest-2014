@@ -8,7 +8,7 @@
 \newcommand{\zmod}[1]{\ensuremath{\mathbb{Z}/#1\mathbb{Z}}}
 
 \usetheme{PaloAlto}
-\usecolortheme{seagull}
+\usecolortheme{penguin}
 
 \title[Elliptic Curve Cryptography]{Elliptic Curves and
     Their Applications in Cryptography}
@@ -63,9 +63,9 @@
     \end{frame}
 
     \begin{frame}
-        \frametitle{Elliptic Curve on \zmod{61}}
+        \frametitle{Elliptic Curve \(y^2 = x^3 - x\) on \zmod{61}}
         \centering
-        \includegraphics[height=.9\textheight]{EllipticCurveOnFiniteField.png}
+        \includegraphics[width=\textwidth]{Z61.pdf}
     \end{frame}
 
     \subsection{Affine Space}
@@ -75,13 +75,13 @@
             Given a finite field with \(q\) elements, \(\mathbb{F}_q\),
             affine \(n\)-space over \(\mathbb{F}_q\), denoted
             \(A^n(\mathbb{F}_q)\), is the set of
-            \(n\)-tuples \((a_0, a_1, \dots, a_{n - 1})\) with
+            \(n\)-tuples \((a_1, a_2, \dots, a_n)\) with
             \(a_i \in \mathbb{F}_q.\)
         \end{definition}
         \vfill
         \begin{definition}
             A \textbf{point} in \(A^n(\mathbb{F}_q)\) is an \(n\)-tuple
-            \((a_0, a_1, \dots, a_{n - 1})\) for \(a_i \in \mathbb{F}_q\).
+            \((a_1, a_2, \dots, a_n)\) for \(a_i \in \mathbb{F}_q\).
         \end{definition}
     \end{frame}
 
@@ -99,7 +99,7 @@
         \end{definition}
     \end{frame}
 
-    \begin{frame}
+    \begin{frame}[label=projective]
         \frametitle{Projective Space}
         \begin{definition}
             A \textbf{point} in \(P^n(\mathbb{F}_q)\), denoted
@@ -109,13 +109,14 @@
         \vfill
         While \(A^2(\mathbb{F}_q)\) has \(q^2\) points,
         \(P^2(\mathbb{F}_q)\) has \(q^2 + q + 1\) points.
+        \hyperlink{points}{\beamergotobutton{Proof}}
         \vfill
         The points in \(P^2(\mathbb{F}_q)\) can be broken into 2 subsets:
         \begin{itemize}
-            \item \(q^2\) \textbf{finite points} of the form \([a_0, a_1, 1]\)
+            \item \(q^2\) \textbf{finite points} of the form \([1, a_1, a_2]\)
                 that map to \(A^2(\mathbb{F}_q)\)
             \item \(q+1\) \textbf{points at infinity} of the
-                form \([a_0, a_1, 0]\)
+                form \([0, a_0, a_1]\)
                 with the structure of \(P^1(\mathbb{F}_q)\)
         \end{itemize}
     \end{frame}
@@ -153,16 +154,18 @@
     \end{frame}
 
     \subsection{Elliptic Curves}
-    \begin{frame}
+    \begin{frame}[label=forms]
         \frametitle{Elliptic Curves}
         The \textbf{projective Weierstrass equation} of an elliptic curve is
         given by
         \[y^2z + \alpha_1xyz + \alpha_3yz^2 =
           x^3 + \alpha_2x^2z + \alpha_4xz^2 + \alpha_6z^3.\]
-        \vfill % homogenization
+        \vfill
         The affine \textbf{Weierstrass normal form} of an elliptic curve is
         \[y^2 - x^3 - \alpha x - \beta = 0\] with
         discriminant \(\Delta = -16(4\alpha^3 + 27\beta^2)\).
+
+        \hyperlink{maps}{\beamergotobutton{Mappings}}
     \end{frame}
 
     \section{Group Properties}
@@ -170,16 +173,10 @@
     \begin{frame}
         \frametitle{Additive Operation}
         \centering
-        \includegraphics[height=.9\textheight]{grouplaw.jpg}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Additive Operation}
-        \centering
         \includegraphics[width=\textwidth]{ECClines.pdf}
     \end{frame}
 
-    \begin{frame}
+    \begin{frame}[label=add]
         \frametitle{Additive Operation}
         \begin{theorem}
             For an elliptic curve \(\mathcal{E}(\mathbb{F}_q)\)
@@ -197,6 +194,7 @@
                 h &= Ma - Mg - b.
             \end{align*}
         \end{theorem}
+        \hyperlink{addproof}{\beamergotobutton{Proof}}
     \end{frame}
 
     \subsection{ECDLP}
@@ -331,7 +329,8 @@
         \end{encryption}
         \vfill
         \begin{decryption}
-            Bob computes \(M = C_2 - [a]C_1\).
+            Bob computes \(C_2 - [a]C_1 = M + [k]B - [a][k]P = 
+            M + [ka]P - [ak]P = M\).
         \end{decryption}
     \end{frame}
 
@@ -347,12 +346,14 @@
         \vfill
         \begin{algorithm}
             Each computes the shared secret as follows using his/her
-            respective secret:
+            respective secret
             \begin{itemize}
                 \item Alice: \(\omega(B, C)^a\)
                 \item Bob: \(\omega(A, C)^b\)
                 \item Carl: \(\omega(A, B)^c\)
             \end{itemize}
+            since \(\omega(B, C)^a = \omega(A, C)^b = \omega(A, B)^c = 
+                \omega(P, P)^{abc}\)
         \end{algorithm}
     \end{frame}
 
@@ -382,7 +383,9 @@
         \end{encryption}
         \vfill
         \begin{decryption}
-            Bob computes \(M = V - \omega(E, U)\).
+            Observe that \[\omega(E, U) = \omega([s]B, [t]P) =
+            \omega(B, P)^{st} = \omega(B, [s]P)^t = \omega(B, S)^t.\]
+            Bob computes \(M = V - \omega(E, U) = V - \omega(B, S)^t\).
         \end{decryption}
     \end{frame}
 
@@ -427,5 +430,69 @@
         Creative~Commons Attribution-ShareAlike~4.0 International~License.
         To view a copy of this license, visit
         \url{http://creativecommons.org/licenses/by-sa/4.0/}.
+    \end{frame}
+
+    \appendix
+    \section{Points in \(P^2(\mathbb{F}_q)\)}
+    \begin{frame}[label=points]
+        \frametitle{Number of Points in \(P^2(\mathbb{F}_q)\)}
+        It is clear that the number of points in \(A^n(\mathbb{F}_q)\)
+        is \(q^n\).
+        \vfill
+        \begin{proof}
+            Observe that
+            \[P^2(\mathbb{F}_q) = \{[1, a, b] | a, b \in \mathbb{F}_q\}
+                \cup \{[0, 1, a] | a \in \mathbb{F}_q\}
+                \cup \{[0, 0, 1]\}\]
+            It follows that the number of points in \(P^2(\mathbb{F}_q)\)
+            is \[q^2 + q + 1.\]
+        \end{proof}
+        \hyperlink{projective}{\beamergotobutton{Back}}
+    \end{frame}
+
+    \section{Maps Between Spaces}
+    \begin{frame}[label=maps]
+        \frametitle{Mappings Between Projective and Affine Spaces}
+        Let \(K\) be a field and define \(H\) as the points at infinity
+        of \(P^n(K)\). Mappings \(\lambda\) and \(\phi\) between
+        affine and projective spaces are defined as follows.
+        \begin{align*}
+            \lambda&: A^n(K) \to P^n(K) \\
+            &\lambda(a_1, a_2, \dots, a_n) = [1, a_1, a_2, \dots, a_n]
+        \end{align*}
+        \begin{align*}
+            \phi&: P^n(K) - H \to A^n(K) \\
+            &\phi([b_0, b_1, \dots, b_n]) =
+                \left(\frac{b_1}{b_0}, \frac{b_2}{b_0}, \dots,
+                \frac{b_n}{b_0}\right)
+        \end{align*}
+        \hyperlink{forms}{\beamergotobutton{Back}}
+    \end{frame}
+
+    \section{Addition on \(\mathcal{E}\)}
+    \begin{frame}[label=addproof]
+        \frametitle{Correctness of Additive Operation on \(\mathcal{E}\)}
+        Let \(\ell\), the line passing through \(P\) and \(Q\), be given by
+        \(y = Mx - C\) with \(M\) as defined for the addition
+        operation and \(N = b - Ma\). Also let \(S = (g', h')\) be the third
+        intersection of
+        \(\mathcal{E}\) and \(\ell\). Substituting the equation for \(\ell\)
+        into that of \(\mathcal{E}\),
+        \[(Mx + N)^2 = x^3 + \alpha x + \beta\] which expands to
+        \[f(x) = x^3 - M^2x^2 + (\alpha - 2MN)x + \beta - N^2 = 0.\]
+    \end{frame}
+    \begin{frame}
+        \frametitle{Correctness of Additive Operation on \(\mathcal{E}\)}
+        Since \(a, c, g'\) are the \(x\) coordinates of \(p, Q, S\),
+        respectively,
+        \[f(x) = (x - a)(x - c)(x - g')\]
+        and by expanding and comparing coefficients,
+        \begin{align*}
+            g' &= M^2 - a - c \\
+            h' &= Mg' + N
+        \end{align*}
+        so
+        \[P + Q = S = (g', -h').\]
+        \hyperlink{add}{\beamergotobutton{Back}}
     \end{frame}
 \end{document}

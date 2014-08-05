@@ -6,3 +6,7 @@
 *.synctex.gz
 *.toc
 *.swp
+*.bak
+__pycache__
+*.pyc
+*.pyo

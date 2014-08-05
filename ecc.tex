@@ -12,7 +12,7 @@
 
 \title[Elliptic Curve Cryptography]{Elliptic Curves and
     Their Applications in Cryptography}
-\author{Tim Shaffer\thanks{Advisor: Dr. Jacek Fabrykowski}}
+\author{Tim Shaffer\thanks{Adviser: Dr. Jacek Fabrykowski}}
 \institute[YSU]{Youngstown State University}
 \date{MathFest 2014}
 
@@ -37,7 +37,13 @@
     \begin{frame}
         \frametitle{Elliptic Curve Factorization}
         Pollard's~\(p - 1\)~algorithm can find prime factors \(p\) of a
-        composite integer for which \(p - 1\) is smooth. % define smooth
+        composite integer for which \(p - 1\) is smooth with respect to some
+        relatively small bound \(k\).
+        \vfill
+        \begin{definition}
+            An integer is called \textbf{\(k\)-smooth} if all of its prime
+            factors are less than \(k\).
+        \end{definition}
         \vfill
         Elliptic curve factorization is a generalization of
         Pollard's~\(p - 1\)~algorithm using random elliptic curve groups
@@ -183,15 +189,15 @@
             and \(a, b, c, d \in \mathbb{F}_q\),
             let \(P = (a, b)\) and \(Q = (c, d)\) be two points
             on \(\mathcal{E}\) such that \(Q \neq -P = (a, -b)\). Define
-            \[M = 
+            \[m =
                 \begin{dcases}
                     \frac{d - b}{c - a} & \textnormal{if}\ a \neq c \\
                     \frac{3a^2 + \alpha}{2b} & \textnormal{if}\ a = c.
                 \end{dcases}\]
             Then the point \(P + Q\) is given by \(R = (g, h)\) where
             \begin{align*}
-                g &= M^2 - a - c \\
-                h &= Ma - Mg - b.
+                g &= m^2 - a - c \\
+                h &= ma - mg - b.
             \end{align*}
         \end{theorem}
         \hyperlink{addproof}{\beamergotobutton{Proof}}
@@ -295,7 +301,7 @@
     \end{frame}
 
     \subsection{ECDH}
-    \begin{frame}
+    \begin{frame}[label=ecdh]
         \frametitle{Elliptic Curve Diffie-Hellman Exchange}
         \begin{setup}
             \begin{itemize}
@@ -312,10 +318,11 @@
                 \item Bob computes \(Q = [b]A = [ba]P\).
             \end{itemize}
         \end{algorithm}
+        \hyperlink{ecdhexample}{\beamergotobutton{Example}}
     \end{frame}
 
     \subsection{Elgamal}
-    \begin{frame}
+    \begin{frame}[label=elgamal]
         \frametitle{Elgamal Encryption}
         \begin{setup}
             Bob chooses a private key \(b \in \mathbb{Z}\) and computes
@@ -329,9 +336,10 @@
         \end{encryption}
         \vfill
         \begin{decryption}
-            Bob computes \(C_2 - [a]C_1 = M + [k]B - [a][k]P = 
-            M + [ka]P - [ak]P = M\).
+            Bob computes \(C_2 - [b]C_1 = M + [k]B - [b][k]P =
+            M + [kb]P - [bk]P = M\).
         \end{decryption}
+        \hyperlink{elgamalexample}{\beamergotobutton{Example}}
     \end{frame}
 
     \subsection{Tripartite Key Exchange}
@@ -352,7 +360,7 @@
                 \item Bob: \(\omega(A, C)^b\)
                 \item Carl: \(\omega(A, B)^c\)
             \end{itemize}
-            since \(\omega(B, C)^a = \omega(A, C)^b = \omega(A, B)^c = 
+            since \(\omega(B, C)^a = \omega(A, C)^b = \omega(A, B)^c =
                 \omega(P, P)^{abc}\)
         \end{algorithm}
     \end{frame}
@@ -390,11 +398,14 @@
     \end{frame}
 
     \section{References}
-    \begin{frame} %[allowframebreaks]
+    \begin{frame}[allowframebreaks]
         \frametitle{References}
         \begin{itemize}
             \item Baker, Alan. \emph{A Comprehensive Course in Number Theory}.
                 New York: Cambridge UP, 2012. Print.
+            \item Bernstein, Daniel J. and Tanja Lange. \emph{SafeCurves:
+                choosing safe curves for elliptic-curve cryptography}.
+                http://safecurves.cr.yp.to, accessed 4 August 2014.
             \item Boutet, Emmanuel. Example Elliptic Curves. Digital image.
                 \emph{Wikimedia Commons}.
                 Wikimedia Foundation, 25 Oct. 2007.
@@ -409,8 +420,10 @@
                 Boca Raton: CRC, 1997. Print.
         \end{itemize}
     \end{frame}
+
+    \appendix
     \begin{frame}
-    \centering
+        \centering
         \begin{columns}[T]
             \begin{column}[T]{.2\textwidth}
                 \centering
@@ -432,7 +445,6 @@
         \url{http://creativecommons.org/licenses/by-sa/4.0/}.
     \end{frame}
 
-    \appendix
     \section{Points in \(P^2(\mathbb{F}_q)\)}
     \begin{frame}[label=points]
         \frametitle{Number of Points in \(P^2(\mathbb{F}_q)\)}
@@ -473,13 +485,13 @@
     \begin{frame}[label=addproof]
         \frametitle{Correctness of Additive Operation on \(\mathcal{E}\)}
         Let \(\ell\), the line passing through \(P\) and \(Q\), be given by
-        \(y = Mx - C\) with \(M\) as defined for the addition
-        operation and \(N = b - Ma\). Also let \(S = (g', h')\) be the third
+        \(y = mx - C\) with \(m\) as defined for the addition
+        operation and \(k = b - ma\). Also let \(S = (g', h')\) be the third
         intersection of
         \(\mathcal{E}\) and \(\ell\). Substituting the equation for \(\ell\)
         into that of \(\mathcal{E}\),
-        \[(Mx + N)^2 = x^3 + \alpha x + \beta\] which expands to
-        \[f(x) = x^3 - M^2x^2 + (\alpha - 2MN)x + \beta - N^2 = 0.\]
+        \[(mx + k)^2 = x^3 + \alpha x + \beta\] which expands to
+        \[f(x) = x^3 - m^2x^2 + (\alpha - 2mk)x + \beta - k^2 = 0.\]
     \end{frame}
     \begin{frame}
         \frametitle{Correctness of Additive Operation on \(\mathcal{E}\)}
@@ -494,5 +506,79 @@
         so
         \[P + Q = S = (g', -h').\]
         \hyperlink{add}{\beamergotobutton{Back}}
+    \end{frame}
+
+    \section{Sample Curve}
+    \begin{frame}
+        \frametitle{secp224r1}
+        \[y^2 = x^3 -3x + \beta\]
+        over \zmod{p} with
+        \begin{align*}
+        p &= 2^224 - 2^96 + 1 \\
+        \beta &= b4~05~0a~85~0c~04~b3~ab~f5~41~32~56~50 \\
+        & 44~b0~b7~d7~bf~d8~ba~27~0b~39~43~23~55~ff~b4 \\
+        \end{align*}
+        and base point
+        \begin{align*}
+        (b7~0e~0c~bd~6b~b4~bf~7f~32~13~90~b9~4a~03 \\
+        c1~d3~56~c2~11~22~34~32~80~d6~11~5c~1d~21,\\
+        bd~37~63~88~b5~f7~23~fb~4c~22~df~e6~cd~43 \\
+        75~a0~5a~07~47~64~44~d5~81~99~85~00~7e~34) \\
+        \end{align*}
+    \end{frame}
+
+    \section{Examples}
+    \begin{frame}
+        Assume that all parties choose in advance the
+        following parameters.
+        \begin{itemize}
+            \item \(\mathcal{E}\): \(y^2 = x^3 - x + 1\)
+            \item \(\mathbb{F_p}\): \zmod{113}
+            \item \(P\): \((69, 96)\)
+        \end{itemize}
+        \vfill
+        Let \(M = (53, 111)\) be a block of a secret message.
+    \end{frame}
+
+    \subsection{ECDH}
+    \begin{frame}[label=ecdhexample]
+        \frametitle{ECDH Example}
+        \begin{setup}
+            \begin{itemize}
+                \item Alice chooses \(a = 7\) and sends \(A = [a]P =
+                    [7](69, 96) = (62, 96)\) to Bob.
+                \item Bob chooses \(b = 12\) and sends \(B = [b]P =
+                    [12](69, 96) = (60, 87)\) to Alice.
+            \end{itemize}
+        \end{setup}
+        \vfill
+        \begin{algorithm}
+            \begin{itemize}
+                \item Alice computes \([a]B = [7](60, 87) = (67, 2)\).
+                \item Bob computes \([b]A = [12](62, 96) = (67, 2)\).
+            \end{itemize}
+        \end{algorithm}
+        \hyperlink{ecdh}{\beamergotobutton{Back}}
+    \end{frame}
+
+    \subsection{Elgamal}
+    \begin{frame}[label=elgamalexample]
+        \frametitle{Elgamal Example}
+        \begin{setup}
+            Bob chooses a private key \(b = 8\) and publishes
+            his public key \(B = [b]P = [8](69, 96) = (95, 17)\).
+        \end{setup}
+        \vfill
+        \begin{encryption}
+            Alice chooses a random \(k = 11\)
+            and computes \(C_1 = [k]P = [11](69, 96) = (71, 99)\),
+            \(C_2 = M + [k]B = (53, 111) + [11](95, 17) = (96, 23)\)
+            and sends \((C_1, C_2)\) to Bob.
+        \end{encryption}
+        \vfill
+        \begin{decryption}
+            Bob computes \(C_2 - [b]C_1 = (96, 23) - [8](71, 99) = (53, 111)\).
+        \end{decryption}
+        \hyperlink{elgamal}{\beamergotobutton{Back}}
     \end{frame}
 \end{document}

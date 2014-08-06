@@ -34,29 +34,15 @@
         1995--Andrew Wiles published the first successful proof.
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Elliptic Curve Factorization}
-        Pollard's~\(p - 1\)~algorithm can find prime factors \(p\) of a
-        composite integer for which \(p - 1\) is smooth with respect to some
-        relatively small bound \(k\).
-        \vfill
-        \begin{definition}
-            An integer is called \textbf{\(k\)-smooth} if all of its prime
-            factors are less than \(k\).
-        \end{definition}
-        \vfill
-        Elliptic curve factorization is a generalization of
-        Pollard's~\(p - 1\)~algorithm using random elliptic curve groups
-        over \zmod{p}.
-    \end{frame}
-
-    \section{Definitions}
+    \section{Definition}
     \begin{frame}
         \begin{definition}
             An elliptic curve is a projective algebraic curve with
             affine coordinates given by \[y^2 = x^3 + \alpha x + \beta\]
-            where \[4\alpha^3 + 27\beta^2 \neq 0.\]
+            where the discriminant
+            \[\Delta = -16(4\alpha^3 + 27\beta^2) \neq 0.\]
         \end{definition}
+        \hyperlink{definitions}{\beamergotobutton{Definitions}}
         \vfill
         Elliptic curves over finite fields (usually \zmod{p}) are of
         particular interest in cryptography.
@@ -74,115 +60,16 @@
         \includegraphics[width=\textwidth]{Z61.pdf}
     \end{frame}
 
-    \subsection{Affine Space}
-    \begin{frame}
-        \frametitle{Affine Space}
-        \begin{definition}
-            Given a finite field with \(q\) elements, \(\mathbb{F}_q\),
-            affine \(n\)-space over \(\mathbb{F}_q\), denoted
-            \(A^n(\mathbb{F}_q)\), is the set of
-            \(n\)-tuples \((a_1, a_2, \dots, a_n)\) with
-            \(a_i \in \mathbb{F}_q.\)
-        \end{definition}
-        \vfill
-        \begin{definition}
-            A \textbf{point} in \(A^n(\mathbb{F}_q)\) is an \(n\)-tuple
-            \((a_1, a_2, \dots, a_n)\) for \(a_i \in \mathbb{F}_q\).
-        \end{definition}
-    \end{frame}
-
-    \subsection{Projective Space}
-    \begin{frame}
-        \frametitle{Projective Space}
-        \begin{definition}
-            Projective \(n\)-space over \(\mathbb{F}_q\), denoted
-            \(P^n(\mathbb{F}_q)\), is the set of equivalence classes of
-            nonzero elements of \(A^{n+1}(\mathbb{F}_q)\) under the
-            equivalence relation
-            \[(a_0, a_1, \dots, a_n) \sim (b_0, b_1, \dots, b_n)\] iff there
-            exists a \(0 \neq \lambda \in \mathbb{F}_q\) such that
-            \[a_i = \lambda b_i\] for all \(i = 0, 1, \dots, n\).
-        \end{definition}
-    \end{frame}
-
-    \begin{frame}[label=projective]
-        \frametitle{Projective Space}
-        \begin{definition}
-            A \textbf{point} in \(P^n(\mathbb{F}_q)\), denoted
-            \([a_0, a_1, \dots, a_n]\), is the equivalence class
-            containing \((a_0, a_1, \dots, a_n)\).
-        \end{definition}
-        \vfill
-        While \(A^2(\mathbb{F}_q)\) has \(q^2\) points,
-        \(P^2(\mathbb{F}_q)\) has \(q^2 + q + 1\) points.
-        \hyperlink{points}{\beamergotobutton{Proof}}
-        \vfill
-        The points in \(P^2(\mathbb{F}_q)\) can be broken into 2 subsets:
-        \begin{itemize}
-            \item \(q^2\) \textbf{finite points} of the form \([1, a_1, a_2]\)
-                that map to \(A^2(\mathbb{F}_q)\)
-            \item \(q+1\) \textbf{points at infinity} of the
-                form \([0, a_0, a_1]\)
-                with the structure of \(P^1(\mathbb{F}_q)\)
-        \end{itemize}
-    \end{frame}
-
-    \subsection{Algebraic Curves}
-    \begin{frame}
-        \frametitle{Algebraic Curves}
-        \begin{definition}
-            An affine algebraic curve over \(\mathbb{F}_q\) is defined by
-            \(f(x, y) = 0\) for an irreducible polynomial
-            \(f(x, y) \in \mathbb{F}_q[x, y]\).
-        \end{definition}
-        \vfill
-        \begin{definition}
-            A projective algebraic curve over \(\mathbb{F}_q\) is defined by
-            \(f(x, y, z) = 0\) for an irreducible homogeneous polynomial
-            \(f(x, y, z) \in \mathbb{F}_q[x, y, z]\).
-        \end{definition}
-    \end{frame}
-
-    \subsection{Singular Points}
-    \begin{frame}
-        \frametitle{Singular Points}
-        \begin{definition}
-            A point \(P\) on an affine curve \(f(x, y) = 0\) is called
-            \textbf{singular} if
-            \[\left(\frac{\partial f}{\partial x}(P),
-                    \frac{\partial f}{\partial y}(P)\right) = (0, 0)\]
-        \end{definition}
-        \vfill
-        \begin{definition}
-            An algebraic curve is called \textbf{nonsingular} or
-            \textbf{smooth} if it contains no singular points.
-        \end{definition}
-    \end{frame}
-
-    \subsection{Elliptic Curves}
-    \begin{frame}[label=forms]
-        \frametitle{Elliptic Curves}
-        The \textbf{projective Weierstrass equation} of an elliptic curve is
-        given by
-        \[y^2z + \alpha_1xyz + \alpha_3yz^2 =
-          x^3 + \alpha_2x^2z + \alpha_4xz^2 + \alpha_6z^3.\]
-        \vfill
-        The affine \textbf{Weierstrass normal form} of an elliptic curve is
-        \[y^2 - x^3 - \alpha x - \beta = 0\] with
-        discriminant \(\Delta = -16(4\alpha^3 + 27\beta^2)\).
-
-        \hyperlink{maps}{\beamergotobutton{Mappings}}
-    \end{frame}
-
     \section{Group Properties}
     \subsection{Additive Operation}
     \begin{frame}
         \frametitle{Additive Operation}
+        \hyperlink{points}{\beamergotobutton{Point at Infinity}}
         \centering
         \includegraphics[width=\textwidth]{ECClines.pdf}
     \end{frame}
 
-    \begin{frame}[label=add]
+    \begin{frame}
         \frametitle{Additive Operation}
         \begin{theorem}
             For an elliptic curve \(\mathcal{E}(\mathbb{F}_q)\)
@@ -200,7 +87,7 @@
                 h &= ma - mg - b.
             \end{align*}
         \end{theorem}
-        \hyperlink{addproof}{\beamergotobutton{Proof}}
+        \hyperlink{add}{\beamergotobutton{Proof}}
     \end{frame}
 
     \subsection{ECDLP}
@@ -209,80 +96,11 @@
         Given \(P = (a, b)\) on \(\mathcal{E}\), it is possible to
         efficiently compute \(\overbrace{P + \dots + P}^{n\ \textrm{times}}\),
         denoted \([n]P\).
+
+        \hyperlink{mul}{\beamergotobutton{Implementation}}
         \vfill
         However, given \(P\) and \([n]P\), it can be \emph{very} difficult to
         compute the value of \(n\).
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Efficient Computation of \([n]P\)}
-        \begin{algorithm}
-            \begin{enumerate}
-                \item Write \(n\) in its binary form, i.e.
-                    \(n = n_0 + 2n_1 + 2^2n_2 + \dots + 2^tn_t\),
-                    with \(n_i \in \{0, 1\}\) and \(n_t = 1\).
-                \item Let \(P_0 = P\).
-                \item For \(i = 1, \dots, t\), compute \(P_i = [2^i]P =
-                    [2]P_{i - 1}\) recursively.
-                \item Then, \([m]P =\sum _{i = 0} ^t [n_i]P_i\).
-            \end{enumerate}
-        \end{algorithm}
-        \vfill
-        While na\"{i}ve application of the group operator
-        requires \(n\) additions, this algorithm can be carried out
-        in \(2t \leq 2 \log n\) additions.
-    \end{frame} % brush up on \rho, baby-step giant-step
-
-    \subsection{Order of \(\mathcal{E}(\mathbb{F}_q)\)}
-    \begin{frame}
-        \frametitle{Order of \(\mathcal{E}(\mathbb{F}_q)\)}
-        A curve with a small number of points would be vulnerable to
-        cryptanalysis.
-        \vfill
-        If an elliptic curve on \(\mathbb{F}_p\) has exactly \(p\) points,
-        the ECDLP can be transformed into addition in \(\mathbb{Z}_p\).
-        \vfill
-        \begin{definition}[Hasse-Weil Bound]
-            Let \(N\) be the number of points in \(\mathbb{F}_q\)
-            on an elliptic curve \(\mathcal{E}\).
-            \[q + 1 - 2\sqrt{q} \leq N \leq q + 1 + 2\sqrt{q}.\]
-        \end{definition}
-    \end{frame}
-
-    \subsection{Schoof's Algorithm}
-    \begin{frame}
-        \frametitle{Schoof's Algorithm}
-        The number of points on an elliptic curve can be calculated
-        efficiently using a deterministic polynomial time algorithm.
-        \vfill
-        Schoof's Algorithm works by computing \(q + 1 - N \pmod p\) for
-        a large number of primes whose product is greater than \(4\sqrt{q}\),
-        then calculating \(q + 1 - N\) by the Chinese Remainder Theorem.
-        \vfill
-        With improvements by Atkin and Elkies, Schoof's Algorithm
-        runs in \(O(\log^4 q)\) time.
-    \end{frame}
-
-    \subsection{Pairings}
-    \begin{frame}
-        \frametitle{Pairings on Elliptic Curves}
-        \begin{definition}
-            Given abelian groups \(G_1, G_2, G_3\), a pairing
-            \(\omega: G_1 \times G_2 \to G_3\) maps every pair of elements
-            in \(G_1 \times G_2\) to some element in \(G_3\).
-        \end{definition}
-        \vfill
-        A \emph{cryptographically useful} pairing is also
-        \begin{itemize}
-            \item bilinear: if \(g_1, g_1' \in G_1\)
-                and \(g_2, g_2' \in G_2\)
-                then \(\omega(g_1g_1', g_2) =
-                \omega(g_1, g_2)\omega(g_1', g_2)\)
-                and \(\omega(g_1, g_2g_2') =
-                \omega(g_1, g_2)\omega(g_1, g_2')\).
-            \item nondegenerate: if \(\omega(g_1, g_2) = 1\)
-                for all \(g_2 \in G_2\) then it follows that \(g_1 = 1\).
-        \end{itemize}
     \end{frame}
 
     \section{Cryptography}
@@ -290,7 +108,7 @@
         Assume that all parties agree in advance on a choice of elliptic curve
         \(\mathcal{E}\) on finite field \(\mathbb{F}_p\),
         \(P \in \mathcal{E}(\mathbb{F}_p)\), and paring \(\omega\)
-        on \(\mathcal{E}\).
+        on \(\mathcal{E}\). \hyperlink{pair}{\beamergotobutton{Pairings}}
         \vfill
         The chosen parameters are assumed to be public knowledge and to
         possess the properties appropriate for security.
@@ -301,7 +119,7 @@
     \end{frame}
 
     \subsection{ECDH}
-    \begin{frame}[label=ecdh]
+    \begin{frame}
         \frametitle{Elliptic Curve Diffie-Hellman Exchange}
         \begin{setup}
             \begin{itemize}
@@ -318,11 +136,10 @@
                 \item Bob computes \(Q = [b]A = [ba]P\).
             \end{itemize}
         \end{algorithm}
-        \hyperlink{ecdhexample}{\beamergotobutton{Example}}
     \end{frame}
 
     \subsection{Elgamal}
-    \begin{frame}[label=elgamal]
+    \begin{frame}
         \frametitle{Elgamal Encryption}
         \begin{setup}
             Bob chooses a private key \(b \in \mathbb{Z}\) and computes
@@ -339,31 +156,61 @@
             Bob computes \(C_2 - [b]C_1 = M + [k]B - [b][k]P =
             M + [kb]P - [bk]P = M\).
         \end{decryption}
-        \hyperlink{elgamalexample}{\beamergotobutton{Example}}
     \end{frame}
 
-    \subsection{Tripartite Key Exchange}
     \begin{frame}
-        \frametitle{Tripartite Key Exchange}
+        Assume that all parties choose in advance the
+        following parameters.
+        \begin{itemize}
+            \item \(\mathcal{E}\): \(y^2 = x^3 - x + 1\)
+            \item \(\mathbb{F_p}\): \zmod{113}
+            \item \(P\): \((69, 96)\)
+        \end{itemize}
+        \vfill
+        Let \(M = (53, 111)\) be a block of a secret message.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Elgamal Example}
         \begin{setup}
-            Alice, Bob, and Carl each choose a random secret
-            \(a, b, c \in \mathbb{Z}\), respectively. They compute and
-            share \(A = [a]P\), \(B = [b]P\), and \(C = [c]P\)
-            over insecure channels.
+            Bob chooses a private key \(b = 8\) and publishes
+            his public key \(B = [b]P = [8](69, 96) = (95, 17)\).
         \end{setup}
         \vfill
-        \begin{algorithm}
-            Each computes the shared secret as follows using his/her
-            respective secret
-            \begin{itemize}
-                \item Alice: \(\omega(B, C)^a\)
-                \item Bob: \(\omega(A, C)^b\)
-                \item Carl: \(\omega(A, B)^c\)
-            \end{itemize}
-            since \(\omega(B, C)^a = \omega(A, C)^b = \omega(A, B)^c =
-                \omega(P, P)^{abc}\)
-        \end{algorithm}
+        \begin{encryption}
+            Alice chooses a random \(k = 11\)
+            and computes \(C_1 = [k]P = [11](69, 96) = (71, 99)\),
+            \(C_2 = M + [k]B = (53, 111) + [11](95, 17) = (96, 23)\)
+            and sends \((C_1, C_2)\) to Bob.
+        \end{encryption}
+        \vfill
+        \begin{decryption}
+            Bob computes \(C_2 - [b]C_1 = (96, 23) - [8](71, 99) = (53, 111)\).
+        \end{decryption}
     \end{frame}
+
+%   \subsection{Tripartite Key Exchange}
+%   \begin{frame}
+%       \frametitle{Tripartite Key Exchange}
+%       \begin{setup}
+%           Alice, Bob, and Carl each choose a random secret
+%           \(a, b, c \in \mathbb{Z}\), respectively. They compute and
+%           share \(A = [a]P\), \(B = [b]P\), and \(C = [c]P\)
+%           over insecure channels.
+%       \end{setup}
+%       \vfill
+%       \begin{algorithm}
+%           Each computes the shared secret as follows using his/her
+%           respective secret
+%           \begin{itemize}
+%               \item Alice: \(\omega(B, C)^a\)
+%               \item Bob: \(\omega(A, C)^b\)
+%               \item Carl: \(\omega(A, B)^c\)
+%           \end{itemize}
+%           since \(\omega(B, C)^a = \omega(A, C)^b = \omega(A, B)^c =
+%               \omega(P, P)^{abc}\)
+%       \end{algorithm}
+%   \end{frame}
 
     \subsection{ID-based Encryption}
     \begin{frame}
@@ -397,6 +244,41 @@
         \end{decryption}
     \end{frame}
 
+
+
+    \section{Comparisons}
+    \begin{frame}
+        \frametitle{Security}
+        \centering
+        NIST Recommended Key Sizes\\
+        \vspace{.5cm}
+        \begin{tabular}{c c c}
+            Symmetric Key Size & RSA and DH Key Size & EC Key Size \\ \hline
+            80 & 1024 & 160 \\
+            112 & 2048 & 224 \\
+            128 & 3072 & 256 \\
+            192 & 7680 & 384 \\
+            256 & 15360 & 521 \\
+        \end{tabular}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Efficiency}
+        \centering
+        Operations per 10 seconds \\
+        \vspace{.5cm}
+        \begin{tabular}{c|c c}
+             & Sign & Verify \\ \hline \hline
+            RSA 1024 & 51670 & 819461 \\
+            RSA 2048 & 7669 & 247067 \\
+            RSA 4096 & 1072 & 66025 \\
+            \hline
+            ECDSA 160 & 163316 & 44279 \\
+            ECDSA 224 & 144934 & 64201 \\
+            ECDSA 521 & 31128 & 13824 \\
+        \end{tabular}
+    \end{frame}
+
     \section{References}
     \begin{frame}[allowframebreaks]
         \frametitle{References}
@@ -418,31 +300,104 @@
             \item Menezes, Alfred J., Paul C. Van Oorschot, and
                 Scott A. Vanstone. \emph{Handbook of Applied Cryptography}.
                 Boca Raton: CRC, 1997. Print.
+            \item ``The Case for Elliptic Curve Cryptography.''
+                \emph{Central Security Service}.
+                NSA, 15 Jan. 2009. Web. 06 Aug. 2014.
         \end{itemize}
     \end{frame}
 
     \appendix
-    \begin{frame}
-        \centering
-        \begin{columns}[T]
-            \begin{column}[T]{.2\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{cc.pdf}
-            \end{column}
-            \begin{column}[T]{.2\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{by.pdf}
-            \end{column}
-            \begin{column}[T]{.2\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sa.pdf}
-            \end{column}
-        \end{columns}
+    \section{Definitions}
+    \begin{frame}[label=definitions]
+        \frametitle{Affine Space}
+        \begin{definition}
+            Given a finite field with \(q\) elements, \(\mathbb{F}_q\),
+            affine \(n\)-space over \(\mathbb{F}_q\), denoted
+            \(A^n(\mathbb{F}_q)\), is the set of
+            \(n\)-tuples \((a_1, a_2, \dots, a_n)\) with
+            \(a_i \in \mathbb{F}_q.\)
+        \end{definition}
         \vfill
-        This work is licensed under the
-        Creative~Commons Attribution-ShareAlike~4.0 International~License.
-        To view a copy of this license, visit
-        \url{http://creativecommons.org/licenses/by-sa/4.0/}.
+        \begin{definition}
+            A \textbf{point} in \(A^n(\mathbb{F}_q)\) is an \(n\)-tuple
+            \((a_1, a_2, \dots, a_n)\) for \(a_i \in \mathbb{F}_q\).
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Projective Space}
+        \begin{definition}
+            Projective \(n\)-space over \(\mathbb{F}_q\), denoted
+            \(P^n(\mathbb{F}_q)\), is the set of equivalence classes of
+            nonzero elements of \(A^{n+1}(\mathbb{F}_q)\) under the
+            equivalence relation
+            \[(a_0, a_1, \dots, a_n) \sim (b_0, b_1, \dots, b_n)\] iff there
+            exists a \(0 \neq \lambda \in \mathbb{F}_q\) such that
+            \[a_i = \lambda b_i\] for all \(i = 0, 1, \dots, n\).
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Projective Space}
+        \begin{definition}
+            A \textbf{point} in \(P^n(\mathbb{F}_q)\), denoted
+            \([a_0, a_1, \dots, a_n]\), is the equivalence class
+            containing \((a_0, a_1, \dots, a_n)\).
+        \end{definition}
+        \vfill
+        While \(A^2(\mathbb{F}_q)\) has \(q^2\) points,
+        \(P^2(\mathbb{F}_q)\) has \(q^2 + q + 1\) points.
+        \vfill
+        The points in \(P^2(\mathbb{F}_q)\) can be broken into 2 subsets:
+        \begin{itemize}
+            \item \(q^2\) \textbf{finite points} of the form \([1, a_1, a_2]\)
+            that map to \(A^2(\mathbb{F}_q)\)
+            \item \(q+1\) \textbf{points at infinity} of the
+            form \([0, a_0, a_1]\)
+            with the structure of \(P^1(\mathbb{F}_q)\)
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Algebraic Curves}
+        \begin{definition}
+            An affine algebraic curve over \(\mathbb{F}_q\) is defined by
+            \(f(x, y) = 0\) for an irreducible polynomial
+            \(f(x, y) \in \mathbb{F}_q[x, y]\).
+        \end{definition}
+        \vfill
+        \begin{definition}
+            A projective algebraic curve over \(\mathbb{F}_q\) is defined by
+            \(f(x, y, z) = 0\) for an irreducible homogeneous polynomial
+            \(f(x, y, z) \in \mathbb{F}_q[x, y, z]\).
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Singular Points}
+        \begin{definition}
+            A point \(P\) on an affine curve \(f(x, y) = 0\) is called
+            \textbf{singular} if
+            \[\left(\frac{\partial f}{\partial x}(P),
+            \frac{\partial f}{\partial y}(P)\right) = (0, 0)\]
+        \end{definition}
+        \vfill
+        \begin{definition}
+            An algebraic curve is called \textbf{nonsingular} or
+            \textbf{smooth} if it contains no singular points.
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Elliptic Curves}
+        The \textbf{projective Weierstrass equation} of an elliptic curve is
+        given by
+        \[y^2z + \alpha_1xyz + \alpha_3yz^2 =
+        x^3 + \alpha_2x^2z + \alpha_4xz^2 + \alpha_6z^3.\]
+        \vfill
+        The affine \textbf{Weierstrass normal form} of an elliptic curve is
+        \[y^2 - x^3 - \alpha x - \beta = 0\] with
+        discriminant \(\Delta = -16(4\alpha^3 + 27\beta^2)\).
     \end{frame}
 
     \section{Points in \(P^2(\mathbb{F}_q)\)}
@@ -459,11 +414,10 @@
             It follows that the number of points in \(P^2(\mathbb{F}_q)\)
             is \[q^2 + q + 1.\]
         \end{proof}
-        \hyperlink{projective}{\beamergotobutton{Back}}
     \end{frame}
 
     \section{Maps Between Spaces}
-    \begin{frame}[label=maps]
+    \begin{frame}
         \frametitle{Mappings Between Projective and Affine Spaces}
         Let \(K\) be a field and define \(H\) as the points at infinity
         of \(P^n(K)\). Mappings \(\lambda\) and \(\phi\) between
@@ -478,11 +432,10 @@
                 \left(\frac{b_1}{b_0}, \frac{b_2}{b_0}, \dots,
                 \frac{b_n}{b_0}\right)
         \end{align*}
-        \hyperlink{forms}{\beamergotobutton{Back}}
     \end{frame}
 
     \section{Addition on \(\mathcal{E}\)}
-    \begin{frame}[label=addproof]
+    \begin{frame}[label=add]
         \frametitle{Correctness of Additive Operation on \(\mathcal{E}\)}
         Let \(\ell\), the line passing through \(P\) and \(Q\), be given by
         \(y = mx - C\) with \(m\) as defined for the addition
@@ -505,7 +458,78 @@
         \end{align*}
         so
         \[P + Q = S = (g', -h').\]
-        \hyperlink{add}{\beamergotobutton{Back}}
+    \end{frame}
+
+    \section{Pairings}
+    \begin{frame}[label=pair]
+        \frametitle{Pairings on Elliptic Curves}
+        \begin{definition}
+            Given abelian groups \(G_1, G_2, G_3\), a pairing
+            \(\omega: G_1 \times G_2 \to G_3\) maps every pair of elements
+            in \(G_1 \times G_2\) to some element in \(G_3\).
+        \end{definition}
+        \vfill
+        A \emph{cryptographically useful} pairing is also
+        \begin{itemize}
+            \item bilinear: if \(g_1, g_1' \in G_1\)
+            and \(g_2, g_2' \in G_2\)
+            then \(\omega(g_1g_1', g_2) =
+            \omega(g_1, g_2)\omega(g_1', g_2)\)
+            and \(\omega(g_1, g_2g_2') =
+            \omega(g_1, g_2)\omega(g_1, g_2')\).
+            \item nondegenerate: if \(\omega(g_1, g_2) = 1\)
+            for all \(g_2 \in G_2\) then it follows that \(g_1 = 1\).
+        \end{itemize}
+    \end{frame}
+
+    \section{Implementation}
+    \begin{frame}[label=mul]
+        \frametitle{Efficient Computation of \([n]P\)}
+        \begin{algorithm}
+            \begin{enumerate}
+                \item Write \(n\) in its binary form, i.e.
+                \(n = n_0 + 2n_1 + 2^2n_2 + \dots + 2^tn_t\),
+                with \(n_i \in \{0, 1\}\) and \(n_t = 1\).
+                \item Let \(P_0 = P\).
+                \item For \(i = 1, \dots, t\), compute \(P_i = [2^i]P =
+                [2]P_{i - 1}\) recursively.
+                \item Then, \([m]P =\sum _{i = 0} ^t [n_i]P_i\).
+            \end{enumerate}
+        \end{algorithm}
+        \vfill
+        While na\"{i}ve application of the group operator
+        requires \(n\) additions, this algorithm can be carried out
+        in \(2t \leq 2 \log n\) additions.
+    \end{frame} % brush up on \rho, baby-step giant-step
+
+    \subsection{Order of \(\mathcal{E}(\mathbb{F}_q)\)}
+    \begin{frame}
+        \frametitle{Order of \(\mathcal{E}(\mathbb{F}_q)\)}
+        A curve with a small number of points would be vulnerable to
+        cryptanalysis.
+        \vfill
+        If an elliptic curve on \(\mathbb{F}_p\) has exactly \(p\) points,
+        the ECDLP can be transformed into addition in \(\mathbb{Z}_p\).
+        \vfill
+        \begin{definition}[Hasse-Weil Bound]
+            Let \(N\) be the number of points in \(\mathbb{F}_q\)
+            on an elliptic curve \(\mathcal{E}\).
+            \[q + 1 - 2\sqrt{q} \leq N \leq q + 1 + 2\sqrt{q}.\]
+        \end{definition}
+    \end{frame}
+    
+    \subsection{Schoof's Algorithm}
+    \begin{frame}
+        \frametitle{Schoof's Algorithm}
+        The number of points on an elliptic curve can be calculated
+        efficiently using a deterministic polynomial time algorithm.
+        \vfill
+        Schoof's Algorithm works by computing \(q + 1 - N \pmod p\) for
+        a large number of primes whose product is greater than \(4\sqrt{q}\),
+        then calculating \(q + 1 - N\) by the Chinese Remainder Theorem.
+        \vfill
+        With improvements by Atkin and Elkies, Schoof's Algorithm
+        runs in \(O(\log^4 q)\) time.
     \end{frame}
 
     \section{Sample Curve}
@@ -521,27 +545,14 @@
         and base point
         \begin{align*}
         (b7~0e~0c~bd~6b~b4~bf~7f~32~13~90~b9~4a~03 \\
-        c1~d3~56~c2~11~22~34~32~80~d6~11~5c~1d~21,\\
+        c1~d3~56~c2~11~22~34~32~80~d6~11~5c~1d~21, \\
         bd~37~63~88~b5~f7~23~fb~4c~22~df~e6~cd~43 \\
         75~a0~5a~07~47~64~44~d5~81~99~85~00~7e~34) \\
         \end{align*}
     \end{frame}
 
-    \section{Examples}
+    \section{ECDH Example}
     \begin{frame}
-        Assume that all parties choose in advance the
-        following parameters.
-        \begin{itemize}
-            \item \(\mathcal{E}\): \(y^2 = x^3 - x + 1\)
-            \item \(\mathbb{F_p}\): \zmod{113}
-            \item \(P\): \((69, 96)\)
-        \end{itemize}
-        \vfill
-        Let \(M = (53, 111)\) be a block of a secret message.
-    \end{frame}
-
-    \subsection{ECDH}
-    \begin{frame}[label=ecdhexample]
         \frametitle{ECDH Example}
         \begin{setup}
             \begin{itemize}
@@ -558,27 +569,45 @@
                 \item Bob computes \([b]A = [12](62, 96) = (67, 2)\).
             \end{itemize}
         \end{algorithm}
-        \hyperlink{ecdh}{\beamergotobutton{Back}}
     \end{frame}
 
-    \subsection{Elgamal}
-    \begin{frame}[label=elgamalexample]
-        \frametitle{Elgamal Example}
-        \begin{setup}
-            Bob chooses a private key \(b = 8\) and publishes
-            his public key \(B = [b]P = [8](69, 96) = (95, 17)\).
-        \end{setup}
+    \section{Factorization}
+    \begin{frame}
+        \frametitle{Elliptic Curve Factorization}
+        Pollard's~\(p - 1\)~algorithm can find prime factors \(p\) of a
+        composite integer for which \(p - 1\) is smooth with respect to some
+        relatively small bound \(k\).
         \vfill
-        \begin{encryption}
-            Alice chooses a random \(k = 11\)
-            and computes \(C_1 = [k]P = [11](69, 96) = (71, 99)\),
-            \(C_2 = M + [k]B = (53, 111) + [11](95, 17) = (96, 23)\)
-            and sends \((C_1, C_2)\) to Bob.
-        \end{encryption}
+        \begin{definition}
+            An integer is called \textbf{\(k\)-smooth} if all of its prime
+            factors are less than \(k\).
+            \end{definition}
+            \vfill
+            Elliptic curve factorization is a generalization of
+            Pollard's~\(p - 1\)~algorithm using random elliptic curve groups
+            over \zmod{p}.
+            \end{frame}
+
+    \begin{frame}
+        \centering
+        \begin{columns}[T]
+            \begin{column}[T]{.2\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{cc.pdf}
+            \end{column}
+            \begin{column}[T]{.2\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{by.pdf}
+            \end{column}
+            \begin{column}[T]{.2\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{sa.pdf}
+            \end{column}
+        \end{columns}
         \vfill
-        \begin{decryption}
-            Bob computes \(C_2 - [b]C_1 = (96, 23) - [8](71, 99) = (53, 111)\).
-        \end{decryption}
-        \hyperlink{elgamal}{\beamergotobutton{Back}}
+        This work is licensed under the
+        Creative~Commons Attribution-ShareAlike~4.0 International~License.
+        To view a copy of this license, visit
+        \url{http://creativecommons.org/licenses/by-sa/4.0/}.
     \end{frame}
 \end{document}
